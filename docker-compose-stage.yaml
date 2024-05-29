@@ -1,5 +1,3 @@
-version: '3.7'
-
 services:
   vehicle-rental-management-system-mysql:
     container_name: vehicle-rental-management-system-mysql-stage

@@ -1,10 +1,9 @@
-version: '3.7'
-
 services:
   vehicle-rental-management-system-mysql:
     container_name: vehicle-rental-management-system-mysql-prod
     ports:
       - '33061:3306'
+
   vehicle-rental-management-system-php:
     container_name: vehicle-rental-management-system-php-prod
     environment:
