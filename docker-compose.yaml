@@ -1,0 +1,30 @@
+version: '3.7'
+
+services:
+  vehicle-rental-management-system-mysql:
+    image: mariadb:10.6.10
+    command: --sql_mode=""
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+    volumes:
+      - vehicle-rental-management-system_db_data:/var/lib/mysql
+
+  vehicle-rental-management-system-php:
+    build: docker/php-fpm
+    working_dir: /app
+    volumes:
+      - ./docker/php-fpm/php.ini:/usr/local/etc/php/php.ini:ro
+      - .:/app:cached
+    depends_on:
+      - vehicle-rental-management-system-mysql
+
+  vehicle-rental-management-system-nginx:
+    image: nginx:latest
+    volumes:
+      - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - .:/app:cached
+    depends_on:
+      - vehicle-rental-management-system-php
+
+volumes:
+  vehicle-rental-management-system_db_data:

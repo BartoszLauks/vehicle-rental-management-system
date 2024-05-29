@@ -1,0 +1,18 @@
+version: '3.7'
+
+services:
+  vehicle-rental-management-system-mysql:
+    container_name: vehicle-rental-management-system-mysql-prod
+    ports:
+      - '33061:3306'
+  vehicle-rental-management-system-php:
+    container_name: vehicle-rental-management-system-php-prod
+    environment:
+      APP_ENV: prod
+      APP_VERSION: prod
+      DATABASE_URL: mysql://root:@vehicle-rental-management-system-mysql:3306/vehicle-rental-management-system_prod
+
+  vehicle-rental-management-system-nginx:
+    container_name: vehicle-rental-management-system-nginx-prod
+    ports:
+      - '8081:80'
