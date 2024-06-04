@@ -53,3 +53,5 @@
 
 # Idea
 .idea
+
+.env.*
