@@ -2,24 +2,32 @@
 
 namespace App\Controller;
 
+use App\DTO\User\UserDTO;
 use App\Entity\User;
+use App\Factory\UserFactory;
 use App\Form\RegistrationFormType;
+use App\Generator\StringGenerator;
+use App\Repository\UserRepository;
 use App\Security\AppAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
-class RegistrationController extends AbstractController
+//#[Route('/security', name: 'security', format: 'json')]
+final class RegistrationController extends AbstractController
 {
     public function __construct(
         private readonly UserPasswordHasherInterface $userPasswordHasher,
         private readonly Security $security,
-        private EntityManagerInterface $entityManager
+        private readonly EntityManagerInterface $entityManager,
+//        private readonly StringGenerator $stringGenerator,
+        private readonly UserFactory $userFactory,
+        private readonly UserRepository $userRepository,
     ) {
     }
 
@@ -52,11 +60,19 @@ class RegistrationController extends AbstractController
         ]);
     }
 
-    #[Route('/api/register', name: 'api_register')]
-    public function registerApi(): JsonResponse
+    // Example. Converting form request body to DTO object class with serialization and single throw exception validation
+    #[Route('/api/register', name: 'api_register', methods: 'POST')]
+    public function registerApi(
+        #[MapRequestPayload(
+            serializationContext: ['groups' => ['api_register']],
+            validationGroups: ['api_register'],
+            validationFailedStatusCode: Response::HTTP_UNPROCESSABLE_ENTITY
+        )] UserDTO $userDTO
+    ): Response
     {
+        $user = $this->userFactory->createFormDTO($userDTO);
+        $this->userRepository->save($user);
 
-
-        return new JsonResponse("User is register",200);
+        return $this->json('User was created',Response::HTTP_CREATED);
     }
 }
