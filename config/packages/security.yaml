@@ -25,6 +25,7 @@ security:
             entry_point: jwt
             refresh_jwt:
                 check_path: /api/token/refresh
+            user_checker: App\Checker\UserChecker
 
         api:
             pattern: ^/api
@@ -33,6 +34,7 @@ security:
             entry_point: refresh_jwt
             refresh_jwt:
                 check_path: api_refresh_token
+            user_checker: App\Checker\UserChecker
 
         main:
             lazy: true
@@ -62,8 +64,9 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/api/token/refresh, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+#        - { path: ^/api/admin, roles: ROLE_ADMIN } # Replace by voters
+        - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
     security:

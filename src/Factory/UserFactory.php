@@ -6,14 +6,14 @@ use App\DTO\User\UserDTO;
 use App\Entity\User;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-final class UserFactory
+final readonly class UserFactory
 {
     public function __construct(
-      private readonly UserPasswordHasherInterface $passwordHasher,
+      private UserPasswordHasherInterface $passwordHasher,
     ) {
     }
 
-    public function createFormDTO(UserDTO $userDTO): User
+    public function createFromDTO(UserDTO $userDTO): User
     {
         $user = new User();
 

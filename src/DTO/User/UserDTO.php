@@ -2,11 +2,12 @@
 
 namespace App\DTO\User;
 
+use App\Exception\LoglessException;
 use App\Validator as Validator;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class UserDTO
+final class UserDTO
 {
     public function __construct(?array $userData)
     {

@@ -66,11 +66,11 @@ final class RegistrationController extends AbstractController
         #[MapRequestPayload(
             serializationContext: ['groups' => ['api_register']],
             validationGroups: ['api_register'],
-            validationFailedStatusCode: Response::HTTP_UNPROCESSABLE_ENTITY
+//            validationFailedStatusCode: Response::HTTP_UNPROCESSABLE_ENTITY
         )] UserDTO $userDTO
     ): Response
     {
-        $user = $this->userFactory->createFormDTO($userDTO);
+        $user = $this->userFactory->createFromDTO($userDTO);
         $this->userRepository->save($user);
 
         return $this->json('User was created',Response::HTTP_CREATED);
