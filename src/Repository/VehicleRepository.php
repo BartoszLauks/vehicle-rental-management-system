@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Vehicle;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -26,6 +27,23 @@ class VehicleRepository extends ServiceEntityRepository
     {
         $this->getEntityManager()->flush();
     }
+
+    public function findWithFilters(array $params = []): QueryBuilder
+    {
+        $order = 'ASC';
+
+        if (key_exists('order', $params)) {
+            $order = $params['order'] === 'DESC' ? 'DESC' : 'ASC';
+        }
+
+        $qb = $this->createQueryBuilder('v');
+
+        $qb->orderBy('v.created_at', $order);
+
+        return $qb;
+
+    }
+
     //    /**
     //     * @return Vehicle[] Returns an array of Vehicle objects
     //     */
