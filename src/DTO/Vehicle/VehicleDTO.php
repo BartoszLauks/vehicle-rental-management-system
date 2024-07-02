@@ -8,6 +8,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final class VehicleDTO
 {
+    /** @param mixed[]|null $vehicleData */
     public function __construct(?array $vehicleData)
     {
         $this->name = $vehicleData['email'] ?? null;

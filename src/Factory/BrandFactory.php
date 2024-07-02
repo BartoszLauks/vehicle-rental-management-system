@@ -8,11 +8,6 @@ use App\Repository\BrandRepository;
 
 final readonly class BrandFactory
 {
-    public function __construct(
-        private BrandRepository $brandRepository
-    ) {
-    }
-
     public function createFromDTO(BrandDTO $brandDTO): Brand
     {
         $brand = new Brand();

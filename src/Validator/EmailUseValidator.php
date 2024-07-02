@@ -13,9 +13,12 @@ class EmailUseValidator extends ConstraintValidator
     ) {
     }
 
-    public function validate($value, Constraint $constraint): void
+    public function validate(mixed $value, Constraint $constraint): void
     {
-        /* @var EmailUse $constraint */
+        if ( !$constraint instanceof EmailUse) {
+            throw new \InvalidArgumentException(sprintf('Expected instance of %s, got %s',
+                EmailUse::class, get_class($constraint)));
+        }
 
         if (null === $value || '' === $value) {
             return;

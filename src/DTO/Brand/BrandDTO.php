@@ -7,6 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final class BrandDTO
 {
+    /** @param mixed[]|null $brandData */
     public function __construct(?array $brandData)
     {
         $this->name = $brandData['name'] ?? null;

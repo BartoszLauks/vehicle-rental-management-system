@@ -9,6 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final class UserDTO
 {
+    /** @param mixed[]|null $userData */
     public function __construct(?array $userData)
     {
         $this->email = $userData['email'] ?? null;

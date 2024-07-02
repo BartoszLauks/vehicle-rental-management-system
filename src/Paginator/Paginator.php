@@ -41,6 +41,7 @@ class Paginator
         return $paginator;
     }
 
+    /** @param mixed[] $collection */
     public function createPaginatedResponse(iterable $collection, Pagerfanta $paginator): PaginatedCollection
     {
         return new PaginatedCollection(
@@ -51,6 +52,10 @@ class Paginator
         );
     }
 
+    /**
+     * @param mixed[] $collection
+     * @param mixed[] $metadata
+     */
     public function createdCustomPaginatedResponse(iterable $collection, array $metadata): PaginatedCollection
     {
         return new PaginatedCollection(

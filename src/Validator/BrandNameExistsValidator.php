@@ -13,9 +13,12 @@ class BrandNameExistsValidator extends ConstraintValidator
     ) {
     }
 
-    public function validate($value, Constraint $constraint): void
+    public function validate(mixed $value, Constraint $constraint): void
     {
-        /* @var BrandNameExists $constraint */
+        if ( !$constraint instanceof BrandNameExists) {
+            throw new \InvalidArgumentException(sprintf('Expected instance of %s, got %s',
+                BrandNameExists::class, get_class($constraint)));
+        }
 
         if (null === $value || '' === $value) {
             return;

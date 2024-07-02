@@ -6,6 +6,7 @@ namespace App\DTO;
 
 class PaginatedCollection
 {
+    /** @param mixed[] $items */
     public function __construct(
         public iterable $items,
         public int $total,

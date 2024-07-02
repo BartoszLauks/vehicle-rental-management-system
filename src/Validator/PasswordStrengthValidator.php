@@ -7,9 +7,12 @@ use Symfony\Component\Validator\ConstraintValidator;
 
 class PasswordStrengthValidator extends ConstraintValidator
 {
-    public function validate($value, Constraint $constraint): void
+    public function validate(mixed $value, Constraint $constraint): void
     {
-        /* @var PasswordStrength $constraint */
+        if ( !$constraint instanceof PasswordStrength) {
+            throw new \InvalidArgumentException(sprintf('Expected instance of %s, got %s',
+                PasswordStrength::class, get_class($constraint)));
+        }
 
         if (null === $value || '' === $value) {
             return;
@@ -17,7 +20,7 @@ class PasswordStrengthValidator extends ConstraintValidator
 
         if (strlen($value) < $constraint::LENGTH_PASSWORD) {
             $this->context->buildViolation($constraint->lengthPasswordMessage)
-                ->setParameter('{{ lenPassword }}', strlen($value))
+                ->setParameter('{{ lenPassword }}', (string) strlen($value))
                 ->addViolation();
         }
 

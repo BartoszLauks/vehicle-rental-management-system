@@ -5,7 +5,7 @@ namespace App\DTO\Transformer;
 use App\DTO\Brand\BrandResponseDTO;
 use App\Factory\ResponseDTOFactory;
 
-class BrandResponseDTOTransformer extends AbstractResponseDTOTransformer
+final class BrandResponseDTOTransformer extends AbstractResponseDTOTransformer
 {
     public function __construct(
         private readonly ResponseDTOFactory $responseDTOFactory
@@ -14,6 +14,6 @@ class BrandResponseDTOTransformer extends AbstractResponseDTOTransformer
 
     public function transformFromObject(mixed $object): BrandResponseDTO
     {
-        $this->responseDTOFactory->createBrandDTOFromVehicle($object);
+        return $this->responseDTOFactory->createBrandDTOFromVehicle($object);
     }
 }

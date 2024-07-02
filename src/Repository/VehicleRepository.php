@@ -10,7 +10,7 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * @extends ServiceEntityRepository<Vehicle>
  */
-class VehicleRepository extends ServiceEntityRepository
+final class VehicleRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
@@ -34,6 +34,9 @@ class VehicleRepository extends ServiceEntityRepository
         $this->flush();
     }
 
+    /**
+     * @param array<string, string> $params
+     */
     public function findWithFilters(array $params = []): QueryBuilder
     {
         $order = 'ASC';
@@ -47,6 +50,5 @@ class VehicleRepository extends ServiceEntityRepository
         $qb->orderBy('v.created_at', $order);
 
         return $qb;
-
     }
 }

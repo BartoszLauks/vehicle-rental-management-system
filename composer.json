@@ -30,6 +30,7 @@
         "symfony/yaml": "7.0.*"
     },
     "require-dev": {
+        "phpstan/phpstan": "^1.11",
         "symfony/maker-bundle": "^1.59",
         "symfony/stopwatch": "7.0.*",
         "symfony/web-profiler-bundle": "7.0.*"

@@ -14,6 +14,9 @@ final readonly class MultiFieldValidator
     ) {
     }
 
+    /**
+     * @param array<string> $groups
+     */
     public function validate(mixed $value, array $groups): void
     {
         $validations = $this->validator->validate($value, null, $groups);

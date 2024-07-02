@@ -8,5 +8,8 @@ class UserResponseDTO
 
     public string $email;
 
+    /**
+     * @var array|string[]
+     */
     public array $roles = ['ROLE_USER'];
 }
