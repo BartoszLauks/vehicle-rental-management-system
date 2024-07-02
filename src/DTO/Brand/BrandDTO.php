@@ -12,7 +12,7 @@ final class BrandDTO
         $this->name = $brandData['name'] ?? null;
     }
 
-    #[Groups(groups: ['brand:create'])]
-    #[Assert\NotBlank(groups: ['brand:create'])]
+    #[Groups(groups: ['brand:default'])]
+    #[Assert\NotBlank(groups: ['brand:default'])]
     public ?string $name;
 }

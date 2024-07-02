@@ -16,20 +16,21 @@ final class VehicleDTO
         $this->brand_name = $vehicleData['brand_name'] ?? null;
     }
 
-    #[Groups(groups: ['vehicle:create'])]
-    #[Assert\NotBlank(groups: ['vehicle:create'])]
+    #[Groups(groups: ['vehicle:default'])]
+    #[Assert\NotBlank(groups: ['vehicle:default'])]
     public ?string $name;
 
-    #[Groups(groups: ['vehicle:create'])]
-    #[Assert\NotBlank(groups: ['vehicle:create'])]
+    #[Groups(groups: ['vehicle:default'])]
+    #[Assert\NotBlank(groups: ['vehicle:default'])]
     public ?string $registrationNumber;
 
-    #[Groups(groups: ['vehicle:create'])]
-    #[Assert\NotBlank(groups: ['vehicle:create'])]
+    #[Groups(groups: ['vehicle:default'])]
+    #[Assert\NotBlank(groups: ['vehicle:default'])]
     public ?int $mileage;
 
-    #[Groups(groups: ['vehicle:create'])]
-    #[Validator\BrandNameExists(groups: ['vehicle:create'])]
+    #[Groups(groups: ['vehicle:default'])]
+    #[Assert\NotBlank(groups: ['vehicle:default', 'vehicle:patch'])]
+    #[Validator\BrandNameExists(groups: ['vehicle:default', 'vehicle:patch'])]
     public ?string $brand_name;
 
 }
