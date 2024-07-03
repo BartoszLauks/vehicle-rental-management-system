@@ -73,3 +73,6 @@ execphp:
 
 execdb:
 	docker compose exec vehicle-rental-management-system-mysql bash
+
+analyse:
+	vendor/bin/phpstan analyse

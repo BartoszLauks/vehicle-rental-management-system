@@ -5,5 +5,8 @@ parameters:
         - config/
         - public/
         - src/
+
     treatPhpDocTypesAsCertain: false
-    checkGenericClassInNonGenericObjectType: false
+
+    ignoreErrors:
+    	- identifier: missingType.generics
