@@ -3,6 +3,9 @@ OS := $(shell uname)
 install:
 	sh ./install.sh
 
+install_test:
+	sh ./install-test.sh
+
 migrate:
 	docker compose exec -T vehicle-rental-management-system-php php bin/console doctrine:migrations:diff --no-interaction
 	docker compose exec -T vehicle-rental-management-system-php php bin/console doctrine:migrations:migrate --no-interaction
@@ -65,6 +68,15 @@ build_dev:
 start_dev:
 	docker compose -f docker-compose.yaml -f docker-compose-dev.yaml up -d
 
+build_test:
+	docker compose -f docker-compose-dev-test.yaml build
+
+start_test:
+	docker compose -f docker-compose-dev-test.yaml up -d
+
+stop_test:
+	docker compose -f docker-compose-dev-test.yaml down
+
 stop:
 	docker compose down
 
@@ -76,3 +88,11 @@ execdb:
 
 analyse:
 	vendor/bin/phpstan analyse
+
+load_fixtures:
+	docker compose exec -T vehicle-rental-management-system-php-test bin/console doctrine:schema:drop --env=test --force
+	docker compose exec -T vehicle-rental-management-system-php-test bin/console doctrine:schema:update --env=test --force
+	docker compose exec -T vehicle-rental-management-system-php-test bin/console doctrine:fixtures:load --env=test -n
+
+run_tests:
+	docker compose exec -T vehicle-rental-management-system-php-test vendor/bin/phpunit

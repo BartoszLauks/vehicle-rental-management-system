@@ -1,0 +1,39 @@
+services:
+  vehicle-rental-management-system-mysql-test:
+    container_name: vehicle-rental-management-system-mysql-test
+    image: mariadb:10.6.10
+    ports:
+      - '33067:3306'
+    command: --sql_mode=""
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+    volumes:
+      - vehicle-rental-management-system_db_data-test:/var/lib/mysql
+
+  vehicle-rental-management-system-php-test:
+    container_name: vehicle-rental-management-system-php-test
+    build: docker/php-fpm
+    working_dir: /app
+    environment:
+      APP_ENV: test
+      APP_VERSION: test
+      DATABASE_URL: mysql://root:@vehicle-rental-management-system-mysql-test:3306/vehicle-rental-management-system_dev
+    volumes:
+      - ./docker/php-fpm/php.ini:/usr/local/etc/php/php.ini:ro
+      - .:/app:cached
+    depends_on:
+      - vehicle-rental-management-system-mysql-test
+
+  vehicle-rental-management-system-nginx-test:
+    container_name: vehicle-rental-management-system-nginx-test
+    image: nginx:latest
+    ports:
+      - '8087:80'
+    volumes:
+      - ./docker/nginx/nginx-test.conf:/etc/nginx/conf.d/default.conf
+      - .:/app:cached
+    depends_on:
+      - vehicle-rental-management-system-php-test
+
+volumes:
+  vehicle-rental-management-system_db_data-test:
