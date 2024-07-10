@@ -15,98 +15,73 @@ class CreateTest extends WebTestCase
     private UserRepository $userRepository;
     private JWTTokenManagerInterface $JWTTokenManager;
     private KernelBrowser $client;
+    private string $adminToken;
+    private string $userToken;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->client = static::createClient();
-        $this->userRepository = static::getContainer()->get(UserRepository::class);
-        $this->JWTTokenManager = static::getContainer()->get('lexik_jwt_authentication.jwt_manager');
+        $container = static::getContainer();
+        $this->userRepository = $container->get(UserRepository::class);
+        $this->JWTTokenManager = $container->get(JWTTokenManagerInterface::class);
+
+        $admin = $this->userRepository->findOneBy(['email' => 'admin@test.com']);
+        $this->adminToken = $this->JWTTokenManager->create($admin);
+
+        $user = $this->userRepository->findOneBy(['email' => 'user1@test.com']);
+        $this->userToken = $this->JWTTokenManager->create($user);
+    }
+
+    private function sendPostRequest(string $uri, array $data, string $token): void
+    {
+        $this->client->request(
+            'POST',
+            $uri,
+            [],
+            [],
+            [
+                'CONTENT_TYPE' => 'application/json',
+                'HTTP_AUTHORIZATION' => sprintf('Bearer %s', $token),
+            ],
+            json_encode($data)
+        );
     }
 
     public function testCreateBrandSuccess(): void
     {
-        $user = $this->userRepository->findOneBy(['email' => 'admin@test.com']);
-        $token = $this->JWTTokenManager->create($user);
+        $this->sendPostRequest('/api/admin/brand', ['name' => 'Cat'], $this->adminToken);
 
-        $this->client->request(
-            method: 'POST',
-            uri: '/api/admin/brand',
-            server:
-            [
-                'CONTENT_TYPE' => 'application/json',
-                'HTTP_AUTHORIZATION' => sprintf('Bearer %s', $token),
-            ],
-            content:
-            '{
-                "name": "Cat"
-            }'
-        );
         $this->assertResponseHasHeader('content-type');
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
         $this->assertJsonStringEqualsJsonString(
-            '{
-                "message": "Brand was created"
-            }',
+            json_encode(['message' => 'Brand was created']),
             $this->client->getResponse()->getContent()
         );
     }
 
-    public function testCreateBrandUsageName()
+    public function testCreateBrandUsageName(): void
     {
-        $user = $this->userRepository->findOneBy(['email' => 'admin@test.com']);
-        $token = $this->JWTTokenManager->create($user);
+        $this->sendPostRequest('/api/admin/brand', ['name' => 'Cat'], $this->adminToken);
 
-        $this->client->request(
-            method: 'POST',
-            uri: '/api/admin/brand',
-            server:
-            [
-                'CONTENT_TYPE' => 'application/json',
-                'HTTP_AUTHORIZATION' => sprintf('Bearer %s', $token),
-            ],
-            content:
-            '{
-                "name": "Cat"
-            }'
-        );
         $this->assertResponseHasHeader('content-type');
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertJsonStringEqualsJsonString(
-            '{
-                "message": "The brand with name Cat exist."
-            }',
+            json_encode(['message' => 'The brand with name Cat exist.']),
             $this->client->getResponse()->getContent()
         );
     }
 
     public function testCreateBrandByNotPrivilegeUser(): void
     {
-        $user = $this->userRepository->findOneBy(['email' => 'user1@test.com']);
-        $token = $this->JWTTokenManager->create($user);
+        $this->sendPostRequest('/api/admin/brand', ['name' => 'Cat'], $this->userToken);
 
-        $this->client->request(
-            method: 'POST',
-            uri: '/api/admin/brand',
-            server:
-            [
-                'CONTENT_TYPE' => 'application/json',
-                'HTTP_AUTHORIZATION' => sprintf('Bearer %s', $token),
-            ],
-            content:
-            '{
-                "name": "Cat"
-            }'
-        );
         $this->assertResponseHasHeader('content-type');
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
         $this->assertJsonStringEqualsJsonString(
-            '{
-                "message": "Access Denied."
-            }',
+            json_encode(['message' => 'Access Denied.']),
             $this->client->getResponse()->getContent()
         );
-
     }
 }

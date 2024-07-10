@@ -15,150 +15,93 @@ class PutTest extends WebTestCase
     private UserRepository $userRepository;
     private JWTTokenManagerInterface $JWTTokenManager;
     private KernelBrowser $client;
+    private string $adminToken;
+    private string $userToken;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->client = static::createClient();
-        $this->userRepository = static::getContainer()->get(UserRepository::class);
-        $this->JWTTokenManager = static::getContainer()->get('lexik_jwt_authentication.jwt_manager');
+        $container = static::getContainer();
+        $this->userRepository = $container->get(UserRepository::class);
+        $this->JWTTokenManager = $container->get(JWTTokenManagerInterface::class);
+
+        $admin = $this->userRepository->findOneBy(['email' => 'admin@test.com']);
+        $this->adminToken = $this->JWTTokenManager->create($admin);
+
+        $user = $this->userRepository->findOneBy(['email' => 'user1@test.com']);
+        $this->userToken = $this->JWTTokenManager->create($user);
+    }
+
+    private function sendPutRequest(string $uri, array $data, string $token): void
+    {
+        $this->client->request(
+            'PUT',
+            $uri,
+            [],
+            [],
+            [
+                'CONTENT_TYPE' => 'application/json',
+                'HTTP_AUTHORIZATION' => sprintf('Bearer %s', $token),
+            ],
+            json_encode($data)
+        );
     }
 
     public function testPutBrandSuccess(): void
     {
-        $user = $this->userRepository->findOneBy(['email' => 'admin@test.com']);
-        $token = $this->JWTTokenManager->create($user);
+        $this->sendPutRequest('/api/admin/brand/1', ['name' => 'Cat TEST'], $this->adminToken);
 
-        $this->client->request(
-            method: 'PUT',
-            uri: '/api/admin/brand/1',
-            server:
-            [
-                'CONTENT_TYPE' => 'application/json',
-                'HTTP_AUTHORIZATION' => sprintf('Bearer %s', $token),
-            ],
-            content:
-            '{
-                "name": "Cat TEST"
-            }'
-        );
         $this->assertResponseHasHeader('content-type');
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
         $this->assertJsonStringEqualsJsonString(
-            '{
-                "name": "Cat TEST"
-                }',
+            json_encode(['name' => 'Cat TEST']),
             $this->client->getResponse()->getContent()
         );
     }
 
-    public function techPutBrandNotFound(): void
+    public function testPutBrandNotFound(): void
     {
-        $user = $this->userRepository->findOneBy(['email' => 'admin@test.com']);
-        $token = $this->JWTTokenManager->create($user);
-
-        $this->client->request(
-            method: 'PUT',
-            uri: '/api/admin/brand/100',
-            server:
-            [
-                'CONTENT_TYPE' => 'application/json',
-                'HTTP_AUTHORIZATION' => sprintf('Bearer %s', $token)
-            ],
-            content:
-            '{
-                "name": "Cat TEST"
-            }'
-        );
+        $this->sendPutRequest('/api/admin/brand/100', ['name' => 'Cat TEST'], $this->adminToken);
 
         $this->assertResponseHasHeader('content-type');
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
         $this->assertJsonStringEqualsJsonString(
-            '{
-                "message": "Not found"
-            }',
+            json_encode(['message' => 'Not found']),
             $this->client->getResponse()->getContent()
         );
     }
 
-    public function techPutBrandFailure(): void
+    public function testPutBrandFailure(): void
     {
-        $user = $this->userRepository->findOneBy(['email' => 'admin@test.com']);
-        $token = $this->JWTTokenManager->create($user);
-
-        $this->client->request(
-            method: 'PUT',
-            uri: '/api/admin/brand/1',
-            server:
-            [
-                'CONTENT_TYPE' => 'application/json',
-                'HTTP_AUTHORIZATION' => sprintf('Bearer %s', $token),
-            ],
-            content:
-            '{
-                "name": ""
-            }'
-        );
+        $this->sendPutRequest('/api/admin/brand/1', ['name' => ''], $this->adminToken);
 
         $this->assertResponseHasHeader('content-type');
-        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertJsonStringEqualsJsonString(
-            '{
-                "message": "This value should not be blank."
-                }',
+            json_encode(['message' => 'This value should not be blank.']),
             $this->client->getResponse()->getContent()
         );
 
-        $this->client->request(
-            method: 'PUT',
-            uri: '/api/admin/brand/1',
-            server:
-            [
-                'CONTENT_TYPE' => 'application/json',
-                'HTTP_AUTHORIZATION' => sprintf('Bearer %s', $token),
-            ],
-            content:
-            '{
-                "name": "Cat"
-            }'
-        );
+        $this->sendPutRequest('/api/admin/brand/1', ['name' => 'Cat'], $this->adminToken);
 
         $this->assertResponseHasHeader('content-type');
-        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertJsonStringEqualsJsonString(
-            '{
-                "message": "The brand with name Cat exist."
-                }',
+            json_encode(['message' => 'The brand with name Cat exist.']),
             $this->client->getResponse()->getContent()
         );
     }
 
     public function testCreateBrandByNotPrivilegeUser(): void
     {
-        $user = $this->userRepository->findOneBy(['email' => 'user1@test.com']);
-        $token = $this->JWTTokenManager->create($user);
-
-        $this->client->request(
-            method: 'PUT',
-            uri: '/api/admin/brand/1',
-            server:
-            [
-                'CONTENT_TYPE' => 'application/json',
-                'HTTP_AUTHORIZATION' => sprintf('Bearer %s', $token),
-            ],
-            content:
-            '{
-                "name": "Cat TEST"
-            }'
-        );
+        $this->sendPutRequest('/api/admin/brand/1', ['name' => 'Cat TEST'], $this->userToken);
 
         $this->assertResponseHasHeader('content-type');
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
         $this->assertJsonStringEqualsJsonString(
-            '{
-                "message": "Access Denied."
-                }',
+            json_encode(['message' => 'Access Denied.']),
             $this->client->getResponse()->getContent()
         );
     }
