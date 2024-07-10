@@ -29,13 +29,12 @@ class BrandController extends AbstractController
         validationFailedStatusCode: Response::HTTP_UNPROCESSABLE_ENTITY
     )] BrandDTO $brandDTO): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
-
+//        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $brand = $this->brandFactory->createFromDTO($brandDTO);
 
         $this->brandRepository->save($brand);
 
-        return $this->json('Brand was created', Response::HTTP_CREATED);
+        return $this->json(['message' => 'Brand was created'], Response::HTTP_CREATED);
     }
 
     #[Route('/{id}', name: 'put', methods: 'PUT')]
@@ -45,7 +44,7 @@ class BrandController extends AbstractController
         validationFailedStatusCode: Response::HTTP_UNPROCESSABLE_ENTITY
     )] BrandDTO $brandDTO, Brand $brand): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+//        $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $this->brandUpdater->put($brand, $brandDTO);
 

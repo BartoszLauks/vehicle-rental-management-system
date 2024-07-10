@@ -28,7 +28,7 @@ class BrandNameExistsValidator extends ConstraintValidator
             'name' => $value
         ]);
 
-        if (! $brand) {
+        if ($brand) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $value)
                 ->addViolation();

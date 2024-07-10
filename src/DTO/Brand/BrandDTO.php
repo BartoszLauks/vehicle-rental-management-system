@@ -4,6 +4,7 @@ namespace App\DTO\Brand;
 
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Validator as Validator;
 
 final class BrandDTO
 {
@@ -15,5 +16,6 @@ final class BrandDTO
 
     #[Groups(groups: ['brand:default'])]
     #[Assert\NotBlank(groups: ['brand:default'])]
+    #[Validator\BrandNameExists(groups: ['brand:default'])]
     public ?string $name;
 }

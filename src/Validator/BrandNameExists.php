@@ -11,5 +11,5 @@ use Symfony\Component\Validator\Constraint;
 #[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::TARGET_METHOD | \Attribute::IS_REPEATABLE)]
 class BrandNameExists extends Constraint
 {
-    public string $message = "The brand with name '{{ value }}' does't exist.";
+    public string $message = 'The brand with name {{ value }} exist.';
 }

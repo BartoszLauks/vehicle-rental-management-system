@@ -61,7 +61,7 @@ final class RegistrationController extends AbstractController
     }
 
     // Example. Converting form request body to DTO object class with serialization and single throw exception validation
-    #[Route('/api/register', name: 'api_register', methods: 'POST')]
+    #[Route('/api/register', name: 'api_register', methods: 'POST', format: 'json')]
     public function registerApi(
         #[MapRequestPayload(
             serializationContext: ['groups' => ['api_register']],
@@ -73,6 +73,6 @@ final class RegistrationController extends AbstractController
         $user = $this->userFactory->createFromDTO($userDTO);
         $this->userRepository->save($user);
 
-        return $this->json('User was created',Response::HTTP_CREATED);
+        return $this->json(['message' => 'User was created.'],Response::HTTP_CREATED);
     }
 }
