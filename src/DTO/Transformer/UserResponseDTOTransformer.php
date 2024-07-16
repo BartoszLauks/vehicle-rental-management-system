@@ -5,7 +5,7 @@ namespace App\DTO\Transformer;
 use App\DTO\User\UserResponseDTO;
 use App\Factory\ResponseDTOFactory;
 
-class UserResponseDTOTransformer extends AbstractResponseDTOTransformer
+final class UserResponseDTOTransformer extends AbstractResponseDTOTransformer
 {
     public function __construct(
         private readonly ResponseDTOFactory $responseDTOFactory,

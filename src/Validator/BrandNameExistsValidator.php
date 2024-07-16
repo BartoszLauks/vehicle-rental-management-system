@@ -24,11 +24,14 @@ class BrandNameExistsValidator extends ConstraintValidator
             return;
         }
 
+
         $brand = $this->brandRepository->findOneBy([
             'name' => $value
         ]);
 
-        if ($brand) {
+        $exist = (bool) $brand;
+
+        if ($constraint->reverse ? !$exist : $exist) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $value)
                 ->addViolation();

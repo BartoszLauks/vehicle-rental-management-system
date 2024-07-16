@@ -22,7 +22,7 @@ class VehicleUpdater extends AbstractUpdater
         $this->updateBrandByName($vehicle, $vehicleDTO->brand_name);
     }
 
-    private function updateBrandByName(Vehicle $vehicle, string $brandName): void
+    private function updateBrandByName(Vehicle $vehicle, ?string $brandName): void
     {
         if ($brandName && $brandName !== $vehicle->getBrand()->getName()) {
             $brand = $this->brandRepository->findOneBy(['name' => $brandName]);

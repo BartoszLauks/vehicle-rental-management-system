@@ -27,11 +27,12 @@ final class VehicleDTO
 
     #[Groups(groups: ['vehicle:default'])]
     #[Assert\NotBlank(groups: ['vehicle:default'])]
+    #[Assert\PositiveOrZero(groups: ['vehicle:default'])]
     public ?int $mileage;
 
     #[Groups(groups: ['vehicle:default'])]
-    #[Assert\NotBlank(groups: ['vehicle:default', 'vehicle:patch'])]
-    #[Validator\BrandNameExists(groups: ['vehicle:default', 'vehicle:patch'])]
+    #[Assert\NotBlank(groups: ['vehicle:default'])]
+    #[Validator\BrandNameExists(groups: ['vehicle:default', 'vehicle:patch'], reverse: true)]
     public ?string $brand_name;
 
 }

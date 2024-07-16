@@ -2,7 +2,9 @@
 
 namespace App\Controller\Admin;
 
+use App\DTO\Transformer\VehicleResponseDTOTransformer;
 use App\DTO\Vehicle\VehicleDTO;
+use App\DTO\Vehicle\VehicleResponseDTO;
 use App\Entity\Vehicle;
 use App\Factory\VehicleFactory;
 use App\Repository\VehicleRepository;
@@ -21,6 +23,7 @@ class VehicleController extends AbstractController
         private readonly VehicleFactory $vehicleFactory,
         private readonly VehicleRepository $vehicleRepository,
         private readonly VehicleUpdater $vehicleUpdater,
+        private readonly VehicleResponseDTOTransformer $vehicleResponseDTOTransformer
     ) {
     }
 
@@ -36,7 +39,7 @@ class VehicleController extends AbstractController
 
         $this->vehicleRepository->save($vehicle);
 
-        return $this->json('Vehicle create.' ,Response::HTTP_CREATED);
+        return $this->json(['message' => 'Vehicle create.'] ,Response::HTTP_CREATED);
     }
 
     #[Route('/{id}', name: 'patch', methods: 'PATCH')]
@@ -49,6 +52,7 @@ class VehicleController extends AbstractController
         $this->multiFieldValidator->validate($vehicleDTO, ['vehicle:patch', 'brand:default']);
         $this->vehicleUpdater->patch($vehicle, $vehicleDTO);
 
+        $vehicleDTO = $this->vehicleResponseDTOTransformer->transformFromObject($vehicle);
         $this->vehicleRepository->flush();
 
         return $this->json($vehicleDTO, Response::HTTP_OK);
@@ -61,6 +65,6 @@ class VehicleController extends AbstractController
 
         $this->vehicleRepository->delete($vehicle);
 
-        return $this->json('Vehicle was deleted', Response::HTTP_OK);
+        return $this->json(['message' =>'Vehicle was deleted'], Response::HTTP_OK);
     }
 }
