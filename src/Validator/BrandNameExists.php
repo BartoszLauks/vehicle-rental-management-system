@@ -12,13 +12,13 @@ use Symfony\Component\Validator\Constraint;
 class BrandNameExists extends Constraint
 {
     public string $message = 'The brand with name {{ value }} exist.';
-    public bool $reverse = false;
+    public bool $reverse;
 
     public function __construct(bool $reverse = false, ?string $message = null, ?array $groups = null, $payload = null)
     {
         parent::__construct([], $groups, $payload);
 
         $this->message = $message ?? $this->message;
-        $this->reverse = $reverse ?? $this->reverse;
+        $this->reverse = $reverse;
     }
 }
