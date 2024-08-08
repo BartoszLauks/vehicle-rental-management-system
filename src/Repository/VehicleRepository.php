@@ -51,4 +51,14 @@ final class VehicleRepository extends ServiceEntityRepository
 
         return $qb;
     }
+
+    public function getCountVehicleByBrandGrouping(): array
+    {
+        return $this->createQueryBuilder('v')
+            ->select('b.id', 'b.name', "COUNT(v.brand) AS COUNT")
+            ->join('v.brand', 'b')
+            ->groupBy('b.name')
+            ->getQuery()
+            ->getArrayResult();
+    }
 }

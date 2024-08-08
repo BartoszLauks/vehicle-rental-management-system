@@ -7,6 +7,8 @@ use App\Entity\Brand;
 use App\Factory\BrandFactory;
 use App\Repository\BrandRepository;
 use App\Updater\BrandUpdater;
+use Prometheus\CollectorRegistry;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
@@ -19,6 +21,8 @@ class BrandController extends AbstractController
         private readonly BrandRepository $brandRepository,
         private readonly BrandFactory $brandFactory,
         private readonly BrandUpdater $brandUpdater,
+        private readonly LoggerInterface $logger,
+        private readonly CollectorRegistry $collectorRegistry
     ) {
     }
 
@@ -33,6 +37,16 @@ class BrandController extends AbstractController
         $brand = $this->brandFactory->createFromDTO($brandDTO);
 
         $this->brandRepository->save($brand);
+
+        $counter = $this->collectorRegistry->getOrRegisterCounter(
+          'app',
+            'brand_created',
+            'brands_created',
+            ['type']
+        );
+
+        $counter->inc(['all']);
+//        $counter->inc([]);
 
         return $this->json(['message' => 'Brand was created'], Response::HTTP_CREATED);
     }

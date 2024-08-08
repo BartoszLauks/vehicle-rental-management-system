@@ -6,6 +6,8 @@ services:
       MYSQL_ALLOW_EMPTY_PASSWORD: "true"
     volumes:
       - vehicle-rental-management-system_db_data:/var/lib/mysql
+    networks:
+      - vehicle-rental-management-system-network
 
   vehicle-rental-management-system-php:
     build: docker/php-fpm
@@ -15,6 +17,8 @@ services:
       - .:/app:cached
     depends_on:
       - vehicle-rental-management-system-mysql
+    networks:
+      - vehicle-rental-management-system-network
 
   vehicle-rental-management-system-nginx:
     image: nginx:latest
@@ -23,6 +27,47 @@ services:
       - .:/app:cached
     depends_on:
       - vehicle-rental-management-system-php
+    networks:
+      - vehicle-rental-management-system-network
+
+  vehicle-rental-management-system-prometheus:
+    build: prometheus
+    #    image: prom/prometheus
+    #    volumes:
+    #      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - vehicle-rental-management-system-network
+    depends_on:
+      - vehicle-rental-management-system-redis
+
+  vehicle-rental-management-system-redis:
+    image: redis
+    networks:
+      - vehicle-rental-management-system-network
+    depends_on:
+      - vehicle-rental-management-system-nginx
+
+  vehicle-rental-management-system-grafana:
+    image: grafana/grafana:latest
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - vehicle-rental-management-system-network
+
+  vehicle-rental-management-system-mtail:
+    build: mtail
+    volumes:
+      - ./var/log:/mnt/log
+    networks:
+      - vehicle-rental-management-system-network
+    depends_on:
+      - vehicle-rental-management-system-prometheus
 
 volumes:
   vehicle-rental-management-system_db_data:
+  grafana_data:
+
+networks:
+  vehicle-rental-management-system-network:
+    driver: bridge
+    name: vehicle-rental-management-system-network

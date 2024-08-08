@@ -11,7 +11,8 @@ RUN apk update \
     zlib-dev \
     libxml2-dev \
     libzip-dev \
-    icu-dev
+    icu-dev \
+    && pecl install redis
 
 RUN touch /var/log/schedule.log
 RUN chmod 0777 /var/log/schedule.log
@@ -22,7 +23,7 @@ RUN docker-php-ext-configure intl
 
 RUN docker-php-ext-install pdo_mysql mysqli zip opcache intl
 
-RUN docker-php-ext-enable opcache
+RUN docker-php-ext-enable opcache redis
 
 RUN adduser -D -u 1000 docker && echo "docker:docker" | chpasswd
 

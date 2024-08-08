@@ -1,0 +1,10 @@
+counter brand_total
+counter error_total
+
+/request\.ERROR/ {
+  error_total++
+}
+
+/Created brand/ {
+  brand_total++
+}

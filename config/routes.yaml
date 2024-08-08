@@ -9,3 +9,7 @@ api_login_check:
 
 api_refresh_token:
     path: /api/token/refresh
+
+## expose /metrics/prometheus in your application. Default bundle metrics
+#app_metrics:
+#    resource: '@ArtprimaPrometheusMetricsBundle/Resources/config/routing.xml'

@@ -15,3 +15,21 @@ services:
     container_name: vehicle-rental-management-system-nginx-dev
     ports:
       - '8083:80'
+
+  vehicle-rental-management-system-prometheus:
+    container_name: vehicle-rental-management-system-prometheus-dev
+    ports:
+      - '9090:9090'
+
+  vehicle-rental-management-system-redis:
+    container_name: vehicle-rental-management-system-redis-dev
+
+  vehicle-rental-management-system-grafana:
+    container_name: vehicle-rental-management-system-grafana-dev
+    ports:
+      - '3000:3000'
+
+  vehicle-rental-management-system-mtail:
+    container_name: vehicle-rental-management-system-mtail-dev
+    ports:
+      - '3903:3903'

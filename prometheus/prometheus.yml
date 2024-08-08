@@ -1,0 +1,22 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+
+scrape_configs:
+  - job_name: 'prometheus_self_metrics'
+    # metrics_path defaults to '/metrics'
+    static_configs:
+      - targets: [ 'vehicle-rental-management-system-prometheus-dev:9090' ]
+  - job_name: 'bundle_metrics'
+    metrics_path: /metrics/prometheus
+    static_configs:
+      - targets: [ 'vehicle-rental-management-system-nginx-dev:80' ]
+  - job_name: 'log_based_metrics_with_mtail'
+    static_configs:
+      - targets: [ 'vehicle-rental-management-system-mtail-dev:3903' ]
+  - job_name: 'legacy_metrics'
+    metrics_path: /legacy/metrics
+    static_configs:
+      - targets: [ 'vehicle-rental-management-system-nginx-dev:80' ]
