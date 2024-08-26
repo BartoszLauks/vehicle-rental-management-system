@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Vehicle;
 use App\Repository\BrandRepository;
+use App\Repository\DepotRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -11,6 +12,7 @@ class VehicleFixtures extends Fixture
 {
     public function __construct(
         private readonly BrandRepository $brandRepository,
+        private readonly DepotRepository $depotRepository,
     ) {
     }
 
@@ -25,6 +27,7 @@ class VehicleFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         $brand = $this->brandRepository->find(1);
+        $depot = $this->depotRepository->find(1);
 
         for ($i = 1; $i < self::VEHICLE_QUANTITY; $i++) {
             $vehicle = new Vehicle();
@@ -32,6 +35,7 @@ class VehicleFixtures extends Fixture
             $vehicle->setMileage(1000);
             $vehicle->setRegistrationNumber(sprintf('ABC %d', $i));
             $vehicle->setBrand($brand);
+            $vehicle->setDepot($depot);
 
             $manager->persist($vehicle);
         }
@@ -43,7 +47,8 @@ class VehicleFixtures extends Fixture
     public function getDependencies(): array
     {
         return [
-            BrandFixtures::class
+            BrandFixtures::class//,
+//            DepotFixtures::class
         ];
     }
 }

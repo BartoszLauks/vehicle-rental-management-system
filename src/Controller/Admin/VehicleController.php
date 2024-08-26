@@ -4,7 +4,6 @@ namespace App\Controller\Admin;
 
 use App\DTO\Transformer\VehicleResponseDTOTransformer;
 use App\DTO\Vehicle\VehicleDTO;
-use App\DTO\Vehicle\VehicleResponseDTO;
 use App\Entity\Vehicle;
 use App\Factory\VehicleFactory;
 use App\Repository\VehicleRepository;
@@ -28,7 +27,7 @@ class VehicleController extends AbstractController
     }
 
     #[Route('', name: 'create', methods: 'POST')]
-    public function AddVehicle(#[MapRequestPayload(
+    public function addVehicle(#[MapRequestPayload(
         serializationContext: ['groups' => ['vehicle:default', 'brand:default']]
     )] VehicleDTO $vehicleDTO): Response
     {

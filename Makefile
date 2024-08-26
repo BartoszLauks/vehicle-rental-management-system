@@ -95,7 +95,5 @@ load_fixtures:
 	docker compose exec -T vehicle-rental-management-system-php-test bin/console doctrine:fixtures:load --env=test -n
 
 run_tests:
-	docker compose exec -T vehicle-rental-management-system-php-test bin/console doctrine:schema:drop --env=test --force
-	docker compose exec -T vehicle-rental-management-system-php-test bin/console doctrine:schema:update --env=test --force
-	docker compose exec -T vehicle-rental-management-system-php-test bin/console doctrine:fixtures:load --env=test -n
+	make load_fixtures
 	docker compose exec -T vehicle-rental-management-system-php-test vendor/bin/phpunit
