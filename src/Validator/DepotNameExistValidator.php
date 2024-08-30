@@ -37,7 +37,7 @@ class DepotNameExistValidator extends ConstraintValidator
             return;
         }
 
-        if ($exist) {
+        if (!$exist) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $value)
                 ->addViolation();

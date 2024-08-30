@@ -3,14 +3,34 @@
 namespace App\Factory;
 
 use App\DTO\Brand\BrandResponseDTO;
+use App\DTO\Depot\DepotResponseDTO;
 use App\DTO\User\UserResponseDTO;
 use App\DTO\Vehicle\VehicleResponseDTO;
 use App\Entity\Brand;
+use App\Entity\Depot;
 use App\Entity\User;
 use App\Entity\Vehicle;
 
 class ResponseDTOFactory
 {
+    public function createDepotDTOFromDepot(Depot $depot): DepotResponseDTO
+    {
+        $dto = new DepotResponseDTO();
+
+        $dto->id = $depot->getId();
+        $dto->name = $depot->getName();
+        $dto->city = $depot->getCity();
+        $dto->postalCode = $depot->getPostalCode();
+        $dto->street = $depot->getStreet();
+        $dto->number = $depot->getNumber();
+        $dto->phone = $depot->getPhone();
+        $dto->emailContact = $depot->getEmailContact();
+        $dto->longitude = $depot->getLongitude();
+        $dto->latitude = $depot->getLatitude();
+
+        return $dto;
+    }
+
     public function createVehicleDTOFromVehicle(Vehicle $vehicle): VehicleResponseDTO
     {
         $dto = new VehicleResponseDTO();

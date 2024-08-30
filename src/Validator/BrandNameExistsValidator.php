@@ -31,7 +31,13 @@ class BrandNameExistsValidator extends ConstraintValidator
 
         $exist = (bool) $brand;
 
-        if ($constraint->reverse ? !$exist : $exist) {
+        if ($constraint->reverse && !$exist) {
+            $this->context->buildViolation($constraint->message_reverse)
+                ->setParameter('{{ value }}', $value)
+                ->addViolation();
+        }
+
+        if ( !$exist) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $value)
                 ->addViolation();

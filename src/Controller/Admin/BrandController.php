@@ -2,24 +2,29 @@
 
 namespace App\Controller\Admin;
 
+use App\Controller\AbstractsApiController;
 use App\DTO\Brand\BrandDTO;
+use App\DTO\Transformer\BrandResponseDTOTransformer;
 use App\Entity\Brand;
 use App\Factory\BrandFactory;
 use App\Repository\BrandRepository;
 use App\Updater\BrandUpdater;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 
 #[Route('/api/admin/brand', name: 'api_admin_brand_', format: 'json')]
-class BrandController extends AbstractController
+class BrandController extends AbstractsApiController
 {
     public function __construct(
+        readonly SerializerInterface $serializer,
         private readonly BrandRepository $brandRepository,
         private readonly BrandFactory $brandFactory,
         private readonly BrandUpdater $brandUpdater,
+        private readonly BrandResponseDTOTransformer $brandResponseDTOTransformer,
     ) {
+        parent::__construct($this->serializer);
     }
 
     #[Route('', name: 'create')]
@@ -47,9 +52,9 @@ class BrandController extends AbstractController
 //        $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $this->brandUpdater->put($brand, $brandDTO);
-
         $this->brandRepository->save($brand);
+        $dto = $this->brandResponseDTOTransformer->transformFromObject($brand);
 
-        return $this->json($brandDTO, Response::HTTP_OK);
+        return $this->respond($dto, ['brand:default']);
     }
 }

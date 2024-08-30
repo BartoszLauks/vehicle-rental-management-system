@@ -2,6 +2,7 @@
 
 namespace App\DTO\Vehicle;
 
+use App\Entity\Depot;
 use App\Validator as Validator;
 use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -34,5 +35,10 @@ final class VehicleDTO
     #[Assert\NotBlank(groups: ['vehicle:default'])]
     #[Validator\BrandNameExists(groups: ['vehicle:default', 'vehicle:patch'], reverse: true)]
     public ?string $brand_name;
+
+    #[Groups(groups: ['vehicle:default'])]
+    #[Assert\NotBlank(groups: ['vehicle:default'])]
+    #[Validator\DepotNameExist(groups: ['vehicle:default'])]
+    public ?string $depot_name;
 
 }

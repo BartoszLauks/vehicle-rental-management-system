@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Controller\AbstractsApiController;
 use App\DTO\Transformer\VehicleResponseDTOTransformer;
 use App\DTO\Vehicle\VehicleDTO;
 use App\Entity\Vehicle;
@@ -9,21 +10,23 @@ use App\Factory\VehicleFactory;
 use App\Repository\VehicleRepository;
 use App\Updater\VehicleUpdater;
 use App\Validator\MultiFieldValidator;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 
 #[Route('/api/admin/vehicle', name: 'api_admin_vehicle_', format: 'json')]
-class VehicleController extends AbstractController
+class VehicleController extends AbstractsApiController//AbstractController
 {
     public function __construct(
+        readonly SerializerInterface $serializer,
         private readonly MultiFieldValidator $multiFieldValidator,
         private readonly VehicleFactory $vehicleFactory,
         private readonly VehicleRepository $vehicleRepository,
         private readonly VehicleUpdater $vehicleUpdater,
-        private readonly VehicleResponseDTOTransformer $vehicleResponseDTOTransformer
+        private readonly VehicleResponseDTOTransformer $vehicleResponseDTOTransformer,
     ) {
+        parent::__construct($this->serializer);
     }
 
     #[Route('', name: 'create', methods: 'POST')]
@@ -54,7 +57,7 @@ class VehicleController extends AbstractController
         $vehicleDTO = $this->vehicleResponseDTOTransformer->transformFromObject($vehicle);
         $this->vehicleRepository->flush();
 
-        return $this->json($vehicleDTO, Response::HTTP_OK);
+        return $this->respond($vehicleDTO, ['vehicle:default', 'brand:default']);
     }
 
     #[Route('/{id}', name: 'delete', methods: 'DELETE')]

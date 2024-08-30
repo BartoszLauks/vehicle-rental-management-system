@@ -6,19 +6,21 @@ use App\DTO\Transformer\VehicleResponseDTOTransformer;
 use App\Entity\Vehicle;
 use App\Paginator\Paginator;
 use App\Repository\VehicleRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 
 #[Route('/api/vehicle', name: 'api_vehicle_', format: 'json')]
-class VehicleController extends AbstractController
+class VehicleController extends AbstractsApiController//AbstractController
 {
     public function __construct(
+        readonly SerializerInterface $serializer,
         private readonly VehicleRepository $vehicleRepository,
         private readonly Paginator $paginator,
         private readonly VehicleResponseDTOTransformer $vehicleResponseDTOTransformer,
     ) {
+        parent::__construct($this->serializer);
     }
 
     #[Route('', name: 'index', methods: 'GET')]
@@ -37,7 +39,7 @@ class VehicleController extends AbstractController
         $dtos = $this->vehicleResponseDTOTransformer->transformFromObjects($paginator);
         $paginatedResponse = $this->paginator->createPaginatedResponse($dtos, $paginator);
 
-        return $this->json($paginatedResponse, Response::HTTP_OK);
+        return $this->respond($paginatedResponse, ['vehicle:default', 'brand:default']);
     }
 
     #[Route('/{id}', name: 'show', methods: 'GET')]
@@ -45,6 +47,6 @@ class VehicleController extends AbstractController
     {
         $dto = $this->vehicleResponseDTOTransformer->transformFromObject($vehicle);
 
-        return $this->json($dto, Response::HTTP_OK);
+        return $this->respond($dto, ['vehicle:default', 'brand:default']);
     }
 }

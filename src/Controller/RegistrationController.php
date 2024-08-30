@@ -6,7 +6,6 @@ use App\DTO\User\UserDTO;
 use App\Entity\User;
 use App\Factory\UserFactory;
 use App\Form\RegistrationFormType;
-use App\Generator\StringGenerator;
 use App\Repository\UserRepository;
 use App\Security\AppAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
