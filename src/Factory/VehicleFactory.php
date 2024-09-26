@@ -26,6 +26,9 @@ final readonly class VehicleFactory
         $vehicle->setMileage($vehicleDTO->mileage);
         $vehicle->setDepot($this->depotRepository->findOneBy(['name' => $vehicleDTO->depot_name]));
         $vehicle->setBrand($this->brandRepository->findOneBy(['name' => $vehicleDTO->brand_name]));
+        $vehicle->setDailyPrice($vehicleDTO->daily_price);
+        $vehicle->setMileageLimitPerday($vehicleDTO->mileage_limit_per_day);
+        $vehicle->setAdditionalKmCost($vehicleDTO->additional_km_cost);
 
         return $vehicle;
     }

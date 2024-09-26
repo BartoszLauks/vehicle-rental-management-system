@@ -21,5 +21,4 @@ class VehicleResponseDTO
     public int $mileage;
     #[Groups(['vehicle:default'])]
     public BrandResponseDTO $brand;
-
 }

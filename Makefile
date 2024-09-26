@@ -42,7 +42,7 @@ ifeq ($(OS),Darwin)
 	docker compose stop
 	docker-sync stop
 else
-	docker composestop
+	docker compose stop
 endif
 
 sync_clean:

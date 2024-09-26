@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
 #[Route('/api/vehicle', name: 'api_vehicle_', format: 'json')]
-class VehicleController extends AbstractsApiController//AbstractController
+class VehicleController extends AbstractsApiController
 {
     public function __construct(
         readonly SerializerInterface $serializer,

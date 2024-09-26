@@ -36,7 +36,9 @@ class VehicleFixtures extends Fixture
             $vehicle->setRegistrationNumber(sprintf('ABC %d', $i));
             $vehicle->setBrand($brand);
             $vehicle->setDepot($depot);
-
+            $vehicle->setDailyPrice(sprintf('%s.00', 100 * $i));
+            $vehicle->setMileageLimitPerday(sprintf('%s.00', 100 * $i));
+            $vehicle->setAdditionalKmCost(sprintf('%s.00', 100 * $i));
             $manager->persist($vehicle);
         }
 
@@ -47,8 +49,8 @@ class VehicleFixtures extends Fixture
     public function getDependencies(): array
     {
         return [
-            BrandFixtures::class//,
-//            DepotFixtures::class
+            BrandFixtures::class,
+            DepotFixtures::class
         ];
     }
 }

@@ -41,7 +41,7 @@ class VehicleController extends AbstractsApiController//AbstractController
 
         $this->vehicleRepository->save($vehicle);
 
-        return $this->json(['message' => 'Vehicle create.'] ,Response::HTTP_CREATED);
+        return $this->json(['message' => 'Vehicle was create.'] ,Response::HTTP_CREATED);
     }
 
     #[Route('/{id}', name: 'patch', methods: 'PATCH')]

@@ -4,10 +4,12 @@ namespace App\Factory;
 
 use App\DTO\Brand\BrandResponseDTO;
 use App\DTO\Depot\DepotResponseDTO;
+use App\DTO\Promotions\PromotionsResponseDTO;
 use App\DTO\User\UserResponseDTO;
 use App\DTO\Vehicle\VehicleResponseDTO;
 use App\Entity\Brand;
 use App\Entity\Depot;
+use App\Entity\Promotions;
 use App\Entity\User;
 use App\Entity\Vehicle;
 
@@ -63,6 +65,21 @@ class ResponseDTOFactory
 
         $dto->id = $brand->getId();
         $dto->name = $brand->getName();
+
+        return $dto;
+    }
+
+    public function createPromotionsDTOFromVehicle(Promotions $promotions): PromotionsResponseDTO
+    {
+        $dto = new PromotionsResponseDTO();
+
+        $dto->id = $promotions->getId();
+        $dto->code = $promotions->getCode();
+        $dto->type = $promotions->getType()->value;
+        $dto->value = $promotions->getValue();
+        $dto->valid_from = $promotions->getValidFrom()->format('Y-m-d H:i:s');
+        $dto->valid_to = $promotions->getValidTo()->format('Y-m-d H:i:s');
+        $dto->active = $promotions->getActive();
 
         return $dto;
     }
